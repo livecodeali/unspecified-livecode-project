@@ -1,0 +1,76 @@
+sudo: required
+dist: trusty
+
+# Build on both Linux and OSX
+os:
+  - linux
+  - osx
+
+language: bash
+
+jdk:
+  - openjdk8
+
+# Download correct versions of livecode server
+install: |
+  FETCH_DIR=_fetch
+  mkdir -p ${FETCH_DIR}
+  VERSION=9.0.3
+  VERSION_FOR_URL="$(echo $VERSION | sed 's/\./_/g')"
+  if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then
+    ARCHIVE_NAME="LiveCodeCommunityServer-${VERSION_FOR_URL}-Linux-x86_64.zip"
+  elif [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then
+    ARCHIVE_NAME="LiveCodeCommunityServer-${VERSION_FOR_URL}-Mac.zip"
+  fi
+  SERVER_URL="https://downloads.livecode.com/livecode/${VERSION_FOR_URL}/${ARCHIVE_NAME}"
+  echo "${SERVER_URL}"
+  curl -k "${SERVER_URL}" -o "${FETCH_DIR}/${ARCHIVE_NAME}" --fail
+  EXTRACT_DIR=_download
+  mkdir -p ${EXTRACT_DIR}
+  unzip "${FETCH_DIR}/${ARCHIVE_NAME}" -d "${EXTRACT_DIR}"
+  if [ $? -ne 0 ] ; then
+      echo "    unzip failed"
+      exit 1
+  fi
+  chmod +x "${EXTRACT_DIR}/livecode-community-server"
+
+# Run tests under LiveCode server
+script: |
+  case "${TRAVIS_OS_NAME}" in
+    linux)
+      BUILD_PLATFORM=linux
+      CHECK_COMMAND=xvfb-run
+      ;;
+    osx)
+      BUILD_PLATFORM=mac
+      CHECK_COMMAND=
+      export JAVA_HOME=$(/usr/libexec/java_home)
+      ;;
+  esac
+  export MODE=debug
+  _download/livecode-community-server tests/_testrunner.lc run tests/test-scripts
+  if [ $? -ne 0 ] ; then
+      echo "Tests failed - dumping log file..."
+      cat _test_suite.log
+      exit 1
+  fi
+
+addons:
+  # Packages needed for building LiveCode
+  apt:
+    packages:
+      - gawk
+      - libx11-dev
+      - libxext-dev
+      - libxrender-dev
+      - libxft-dev
+      - libxinerama-dev
+      - libxv-dev
+      - libxcursor-dev
+      - libfreetype6-dev
+      - libgtk2.0-dev
+      - libpopt-dev
+      - libesd0-dev
+      - liblcms2-dev
+      - xvfb
+
