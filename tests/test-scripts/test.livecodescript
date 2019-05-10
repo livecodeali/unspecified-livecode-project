@@ -44,7 +44,7 @@ on TestLetterToNumber
     end repeat
 
     TestAssertUserThrows "non alphabetic input to toNumber function throws", \
-            "LetterToNumberThrow", "char not alphabetical"
+            "LetterToNumberThrow", "char not in the range A to Z"
 end TestLetterToNumber
 
 on TestLetterFromNumber
