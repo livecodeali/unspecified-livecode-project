@@ -1,0 +1,3 @@
+[submodule "livecode"]
+	path = livecode
+	url = https://github.com/livecode/livecode
