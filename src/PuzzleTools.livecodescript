@@ -4,7 +4,7 @@ function toNumber pChar
    local tNum
    put chartonum(toUpper(pChar)) - 64 into tNum
    if tNum < 1 or tNum > 26 then
-      throw "char not alphabetical"
+      throw "char not in the range A to Z"
    else
       return tNum
    end if
