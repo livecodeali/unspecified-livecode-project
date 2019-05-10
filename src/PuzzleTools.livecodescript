@@ -12,7 +12,7 @@ end toNumber
 
 function fromNumber pNum
    local tNum
-   put ((pNum - 1) mod 26) + 65 into tNum
+   put (pNum wrap 26) + 64 into tNum
    return numtochar(tNum)
 end fromNumber
 
