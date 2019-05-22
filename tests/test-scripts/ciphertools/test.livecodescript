@@ -4,7 +4,7 @@ on TestSetup
     local tSourceFile
     put the filename of me into tSourceFile
     set the itemdelimiter to slash
-    put "src/PuzzleTools.livecodescript" into item -3 to -1 of tSourceFile
+    put "src/PuzzleTools.livecodescript" into item -4 to -1 of tSourceFile
     start using stack tSourceFile
 end TestSetup
 
